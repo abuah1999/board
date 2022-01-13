@@ -327,5 +327,19 @@ public class Game : MonoBehaviour
 
     }
 
+    public string GenerateFen(){
+        return "";
+    }
+
+    // takes a single location and converts it to algebraic form
+    public string LocationToAlgebraic(int x, int y){
+        return "";
+    }
+
+    // takes the move from the engine and converts it to start and destination locations
+    public List<int[]> AlgebraicToLocation(){
+        return new List<int[]>();
+    }
+
     
 }
