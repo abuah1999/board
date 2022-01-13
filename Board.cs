@@ -2,8 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//some random comment
-
 public class Board : MonoBehaviour
 {
     public GameObject controller;

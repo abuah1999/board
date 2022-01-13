@@ -100,7 +100,7 @@ public class MovePlate : MonoBehaviour
 
         if (promotion){
             // Create a new piece (in the same positiona as the old one with the same ID), 
-            // Set the new piece as reference and destroy the old one. Incremeny promo_count
+            // Set the new piece as reference and destroy the old one. 
             GameObject cp;
             GameObject[] team;
             int new_ID = reference.GetComponent<Chessman>().GetID();
@@ -154,7 +154,7 @@ public class MovePlate : MonoBehaviour
         
         reference.GetComponent<Chessman>().Emsmallen(reference);
         controller.GetComponent<Game>().selecton = false;
-        reference.GetComponent<Chessman>().DestroyMovePlates(false);
+        reference.GetComponent<Chessman>().DestroyMovePlates(false); 
         reference.GetComponent<Chessman>().mp_coords = new List<int[]>();
         reference.GetComponent<Chessman>().MovePlateSpawn(matrixX, matrixY, "PostMove");
         reference.GetComponent<Chessman>().MovePlateSpawn(init_X, init_Y, "PostMove");

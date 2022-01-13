@@ -165,7 +165,7 @@ public class Game : MonoBehaviour
         }
         foreach (var v in enemies){
             if (v){
-                // A king can't check another king
+                // A king can't check another king (or can he... ?)
                 if (true){
                     v.GetComponent<Chessman>().check_for_checks = false;
                     v.GetComponent<Chessman>().mp_visible = false;
@@ -301,8 +301,8 @@ public class Game : MonoBehaviour
         } else if (gameOver == false && Input.GetKeyDown("a") && !analysis && selecton){
             analysis = true;
             selecton = false;
-            selected. GetComponent<SpriteRenderer>().size -= new Vector2(0.05f, 0.05f);
-            selected. GetComponent<SpriteRenderer>().drawMode = SpriteDrawMode.Simple;
+            selected. GetComponent<Chessman>().Emsmallen(selected);/*<SpriteRenderer>().size -= new Vector2(0.05f, 0.05f);
+            selected. GetComponent<SpriteRenderer>().drawMode = SpriteDrawMode.Simple;*/
             selected. GetComponent<Chessman>().DestroyMovePlates(true);
             selected = null;
         } else if (gameOver == false && Input.GetKeyDown("a") && analysis){
