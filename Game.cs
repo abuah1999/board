@@ -304,16 +304,17 @@ public class Game : MonoBehaviour
             promotionPiece = "B";
         } else if (gameOver == false && Input.GetKeyDown("r")){
             promotionPiece = "R";
-        } else if (gameOver == false && Input.GetKeyDown("a") && !analysis /*&& !selecton*/){
+        } else if (gameOver == false && Input.GetKeyDown("a") && !analysis && !selecton){
             analysis = true;
-        } /*else if (gameOver == false && Input.GetKeyDown("a") && !analysis && selecton){
+        } else if (gameOver == false && Input.GetKeyDown("a") && !analysis && selecton){
             analysis = true;
             selecton = false;
             //selected. GetComponent<Chessman>().Emsmallen(selected);/*<SpriteRenderer>().size -= new Vector2(0.05f, 0.05f);
             //selected. GetComponent<SpriteRenderer>().drawMode = SpriteDrawMode.Simple;
+            selected.GetComponent<Chessman>().Emsmallen(selected);
             selected. GetComponent<Chessman>().DestroyMovePlates(true);
-            selected = null;
-        }*/ else if (gameOver == false && Input.GetKeyDown("a") && analysis){
+            //selected = null;
+        } else if (gameOver == false && Input.GetKeyDown("a") && analysis){
             analysis = false;
         }
     }
