@@ -9,6 +9,8 @@ public class Arrow : MonoBehaviour
     private LineRenderer arrowLine = new LineRenderer();
     public void SetStart(Vector3 start_pos){ start = start_pos; }
     public void SetEnd(Vector3 end_pos){ end = end_pos; }
+    public Vector3 getStart(){return start;}
+    public Vector3 getEnd(){return end;}
     public float arrowheadSize = 0.5f;
     public void Draw(){
         arrowLine = gameObject.GetComponent<LineRenderer>();

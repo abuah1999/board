@@ -6,12 +6,13 @@ public class Board : MonoBehaviour
 {
     public GameObject controller;
     public GameObject arrow;
+    public GameObject movePlate;
     //public float arrowheadSize;
     private Vector3 startPosition, mouseWorld;
     public GameObject currentArrow;
     public List<GameObject> arrowList;
     //private LineRenderer arrowLine = new LineRenderer();
-
+    public List<GameObject> highlightList;
     public Vector3[,] grid = new Vector3[8,8];
 
     public void Start(){
@@ -50,6 +51,12 @@ public class Board : MonoBehaviour
                 }
                 
             }
+            foreach (GameObject h in highlightList){
+                if (h){
+                    Destroy(h);
+                }
+                
+            }
         }
         if (Input.GetMouseButtonDown(0)) {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -73,12 +80,39 @@ public class Board : MonoBehaviour
                     //startPosition = new Vector3(0,0,-2);
                     startPosition = mouseWorld;
                     currentArrow = Instantiate(arrow, startPosition, Quaternion.identity);
-                    arrowList.Add(currentArrow);
+                    
                 }
             }
         }
+
+        if (Input.GetMouseButtonDown(1) && controller.GetComponent<Game>().analysis) {
+            //do stuff here
+            mouseWorld = Camera.main.ScreenToWorldPoint (
+                        new Vector3 (Input.mousePosition.x,
+                                    Input.mousePosition.y,
+                                    -2
+                        ));
+            mouseWorld = snapToGrid(mouseWorld);
+            GameObject mp = Instantiate(movePlate, mouseWorld, Quaternion.identity);
+            mp.GetComponent<MovePlate>().highlight = true;
+            highlightList.Add(mp);
+        }
     
     }
+
+    /*public void OnMouseOver () {
+        if (Input.GetMouseButtonDown(1)) {
+            //do stuff here
+            mouseWorld = Camera.main.ScreenToWorldPoint (
+                        new Vector3 (Input.mousePosition.x,
+                                    Input.mousePosition.y,
+                                    -2
+                        ));
+            mouseWorld = snapToGrid(mouseWorld);
+            GameObject mp = Instantiate(movePlate, mouseWorld, Quaternion.identity);
+            mp.GetComponent<MovePlate>().highlight = true;
+        }
+    }*/
 
    public void OnMouseDown(){
        // mostly not relevant I think. All of my current testing happens when "selecton" is off.
@@ -153,9 +187,21 @@ public class Board : MonoBehaviour
     void OnMouseUp(){
         //Turn off the arrow
         //arrowLine.enabled = false;
+        // Ask Aline about this part later
         RaycastHit hit;
         Physics.Raycast(Camera.main.ScreenPointToRay (Input.mousePosition), out hit, 100);
         transform.position = new Vector3(hit.point.x, transform.position.y, hit.point.z);
+
+        foreach (GameObject a in arrowList){
+            if (a && 
+                a.GetComponent<Arrow>().getStart() == currentArrow.GetComponent<Arrow>().getStart() &&
+                a.GetComponent<Arrow>().getEnd() == currentArrow.GetComponent<Arrow>().getEnd()){
+                    Destroy(a);
+                    Destroy(currentArrow);
+                    break;
+                }
+        }
+        arrowList.Add(currentArrow);
     }
 
     

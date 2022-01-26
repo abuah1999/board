@@ -24,6 +24,7 @@ public class MovePlate : MonoBehaviour
     public bool promotion = false;
     public bool post_move = false;
     public bool check = false;
+    public bool highlight = false;
     public Sprite active_square, inactive_square;
 
     public void Start(){
@@ -54,6 +55,13 @@ public class MovePlate : MonoBehaviour
             Debug.Log("Check!");
             gameObject.GetComponent<SpriteRenderer>().sprite = active_square;
             gameObject.GetComponent<SpriteRenderer>().color = new Color(1.0f, 0.0f, 0.0f, 0.2f);
+            gameObject.transform.position = new Vector3( gameObject.transform.position.x,
+                                                         gameObject.transform.position.y,
+                                                         -0.5f);
+        } else if (highlight){
+            gameObject.layer = 2;
+            // Change the sprite and change the z-transform
+            gameObject.GetComponent<SpriteRenderer>().sprite = active_square;
             gameObject.transform.position = new Vector3( gameObject.transform.position.x,
                                                          gameObject.transform.position.y,
                                                          -0.5f);
