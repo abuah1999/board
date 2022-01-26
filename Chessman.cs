@@ -11,7 +11,7 @@ public class Chessman : MonoBehaviour
     public GameObject movePlate;
 
     // Variable to keep track of enpassantable pawns
-    public bool enpassantable = false;
+    //public bool enpassantable = false;
     
     // List of the coordinates and attack value ([0,1]) of the moveplates the piece can generate
     public List<int[]> mp_coords;
@@ -31,8 +31,11 @@ public class Chessman : MonoBehaviour
     // (0 - 15)
     private int id;
 
-    // Variable to keep track of turn
+    // Variable to keep track of the color of the piece
     private string player;
+
+    // the piece's fen representation
+    private string fen;
 
     // References for all the sprites the chesspiece can be
     public Sprite black_queen, black_knight, black_king, black_pawn, black_bishop, black_rook;
@@ -41,12 +44,20 @@ public class Chessman : MonoBehaviour
     // Update is called once per frame
     // If the player hits "f", flip all the pieces 180 degrees
     void Update()
-    {
+    {   
+        controller = GameObject.FindGameObjectWithTag("GameController");
+        
         if (Input.GetKeyDown("f")){
             // flip the pieces
             Vector3 temp = gameObject.transform.eulerAngles;
             temp.z += 180.0f;
             gameObject.transform.eulerAngles = temp;
+        }
+
+        if (controller.GetComponent<Game>().analysis){
+            gameObject.layer = 2;
+        } else {
+            gameObject.layer = 0;
         }
     }
 
@@ -60,18 +71,18 @@ public class Chessman : MonoBehaviour
         //set the appropriate sprite based on the piece's name
         switch (this.name)
         {
-            case "black_queen": this.GetComponent<SpriteRenderer>().sprite = black_queen; player = "black";break;
-            case "black_knight": this.GetComponent<SpriteRenderer>().sprite = black_knight; player = "black";break;
-            case "black_rook": this.GetComponent<SpriteRenderer>().sprite = black_rook; player = "black";break;
-            case "black_pawn": this.GetComponent<SpriteRenderer>().sprite = black_pawn; player = "black";break;
-            case "black_bishop": this.GetComponent<SpriteRenderer>().sprite = black_bishop; player = "black";break;
-            case "black_king": this.GetComponent<SpriteRenderer>().sprite = black_king; player = "black";break;
-            case "white_queen": this.GetComponent<SpriteRenderer>().sprite = white_queen; player = "white";break;
-            case "white_knight": this.GetComponent<SpriteRenderer>().sprite = white_knight; player = "white";break;
-            case "white_rook": this.GetComponent<SpriteRenderer>().sprite = white_rook; player = "white";break;
-            case "white_pawn": this.GetComponent<SpriteRenderer>().sprite = white_pawn; player = "white";break;
-            case "white_bishop": this.GetComponent<SpriteRenderer>().sprite = white_bishop; player = "white";break;
-            case "white_king": this.GetComponent<SpriteRenderer>().sprite = white_king; player = "white";break;
+            case "black_queen": this.GetComponent<SpriteRenderer>().sprite = black_queen; player = "black"; fen = "q"; break;
+            case "black_knight": this.GetComponent<SpriteRenderer>().sprite = black_knight; player = "black"; fen = "n"; break;
+            case "black_rook": this.GetComponent<SpriteRenderer>().sprite = black_rook; player = "black"; fen = "r"; break;
+            case "black_pawn": this.GetComponent<SpriteRenderer>().sprite = black_pawn; player = "black"; fen = "p"; break;
+            case "black_bishop": this.GetComponent<SpriteRenderer>().sprite = black_bishop; player = "black"; fen = "b"; break;
+            case "black_king": this.GetComponent<SpriteRenderer>().sprite = black_king; player = "black"; fen = "k"; break;
+            case "white_queen": this.GetComponent<SpriteRenderer>().sprite = white_queen; player = "white"; fen = "Q"; break;
+            case "white_knight": this.GetComponent<SpriteRenderer>().sprite = white_knight; player = "white"; fen = "N"; break;
+            case "white_rook": this.GetComponent<SpriteRenderer>().sprite = white_rook; player = "white"; fen = "R"; break;
+            case "white_pawn": this.GetComponent<SpriteRenderer>().sprite = white_pawn; player = "white"; fen = "P"; break;
+            case "white_bishop": this.GetComponent<SpriteRenderer>().sprite = white_bishop; player = "white"; fen = "B"; break;
+            case "white_king": this.GetComponent<SpriteRenderer>().sprite = white_king; player = "white"; fen = "K"; break;
         }
     }
 
@@ -130,6 +141,17 @@ public class Chessman : MonoBehaviour
     }
 
     private void OnMouseOver(){
+        /*int weird_count = 0;
+        if (Input.GetKeyDown("a")){
+            if (weird_count % 2 == 0){
+                Emsmallen(gameObject);
+            } else {
+                Embiggen(gameObject);
+            }
+            weird_count++;
+            
+        }*/
+
         if (Input.GetMouseButtonUp(0)){
             if (!controller.GetComponent<Game>().analysis){
                 //clicked on an already selected piece
@@ -349,7 +371,10 @@ public class Chessman : MonoBehaviour
             }
             if (sc.LocationOnBoard(x+1,y)&&sc.GetPosition(x+1, yBoard) !=null&&
                 sc.GetPosition(x+1, yBoard).GetComponent<Chessman>().player!=player &&
-                sc.GetPosition(x+1, yBoard).GetComponent<Chessman>().enpassantable){
+                controller.GetComponent<Game>().enpassant_square[0] == x+1 &&
+                controller.GetComponent<Game>().enpassant_square[1] == y 
+                //sc.GetPosition(x+1, yBoard).GetComponent<Chessman>().enpassantable
+                ){
                     MovePlateSpawn(x+1, y, "Enpassant");
                 }
             if (sc.LocationOnBoard(x-1,y)&&sc.GetPosition(x-1,y)!=null&&
@@ -358,7 +383,10 @@ public class Chessman : MonoBehaviour
             }
             if (sc.LocationOnBoard(x-1,y)&&sc.GetPosition(x-1, yBoard) !=null&&
                 sc.GetPosition(x-1, yBoard).GetComponent<Chessman>().player!=player &&
-                sc.GetPosition(x-1, yBoard).GetComponent<Chessman>().enpassantable){
+                controller.GetComponent<Game>().enpassant_square[0] == x-1 &&
+                controller.GetComponent<Game>().enpassant_square[1] == y 
+                //sc.GetPosition(x-1, yBoard).GetComponent<Chessman>().enpassantable
+                ){
                     MovePlateSpawn(x-1, y, "Enpassant");
                 }
         }
@@ -575,6 +603,10 @@ public class Chessman : MonoBehaviour
         SetYBoard(y);
         SetCoords();
         controller.GetComponent<Game>().SetPosition(gameObject);
+    }
+
+    public string GetFen(){
+        return fen;
     }
 
 }

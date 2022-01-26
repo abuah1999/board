@@ -59,7 +59,13 @@ public class MovePlate : MonoBehaviour
                                                          -0.5f);
         }
     }
-
+    public void Update(){
+        if (controller.GetComponent<Game>().analysis){
+            gameObject.layer = 2;
+        } else {
+            gameObject.layer = 0;
+        }
+    }
     public void OnMouseEnter(){
         gameObject.GetComponent<SpriteRenderer>().sprite = active_square;
     }
@@ -72,6 +78,13 @@ public class MovePlate : MonoBehaviour
 
     public void OnMouseUp(){
         int y, init_X, init_Y;
+        controller.GetComponent<Game>().enpassant_square = new int[]{-1,-1};
+        controller.GetComponent<Game>().halfmove_clock++;
+        // reset halfmove clock if a pawn is pushed
+        if (reference.GetComponent<Chessman>().name == "white_pawn" ||
+            reference.GetComponent<Chessman>().name == "black_pawn") {
+                controller.GetComponent<Game>().halfmove_clock = 0;
+            }
         if (controller.GetComponent<Game>().GetCurrentPlayer() == "white") {
             // for finding the appropriate rook in case of castling
             y = 0;
@@ -84,6 +97,7 @@ public class MovePlate : MonoBehaviour
             //if (cp.name == "white_king") controller.GetComponent<Game>().Winner("black");
             //if (cp.name == "black_king") controller.GetComponent<Game>().Winner("white");
             DestroyPiece(cp);
+            controller.GetComponent<Game>().halfmove_clock = 0;
         }
 
         if (enpassant){
@@ -95,7 +109,14 @@ public class MovePlate : MonoBehaviour
 
         if (two){
             // if a pawn moved two squares, it is now enpassantable for one turn
-            reference.GetComponent<Chessman>().enpassantable = true;
+            int ex = reference.GetComponent<Chessman>().GetXBoard();
+            int ey = reference.GetComponent<Chessman>().GetYBoard();
+            if (reference.GetComponent<Chessman>().GetPlayer() == "white"){
+                controller.GetComponent<Game>().enpassant_square = new int[]{ex, ey+1};
+            } else {
+                controller.GetComponent<Game>().enpassant_square = new int[]{ex, ey-1};
+            }
+            //reference.GetComponent<Chessman>().enpassantable = true;
         }
 
         if (promotion){

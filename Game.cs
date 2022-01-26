@@ -31,11 +31,16 @@ public class Game : MonoBehaviour
     public bool bqc = true;
     public bool bkc = true;
 
+    public int[] enpassant_square;
+
+    public int halfmove_clock = 0;
+    public int fullmove_number = 1;
+
     // Has a piece been selected to move?
     public bool selecton = false;
 
     // Analysis mode: selecting pieces temporarily paused
-    public bool analysis = true;
+    public bool analysis = false;
 
     // Selected piece
     public GameObject selected = null;
@@ -232,19 +237,20 @@ public class Game : MonoBehaviour
         
         promotionPiece = "Q";
         if (currentPlayer == "white"){
-            foreach (var v in playerBlack){
+            /*foreach (var v in playerBlack){
                 if (v){
                     v.GetComponent<Chessman>().enpassantable = false;
                 }     
-            }
+            }*/
             currentPlayer = "black";
         } else {
-            foreach (var v in playerWhite){
+            /*foreach (var v in playerWhite){
                 if (v){
                     v.GetComponent<Chessman>().enpassantable = false;
                 }    
-            }
+            }*/
             currentPlayer = "white";
+            fullmove_number++;
         }
         if (wqc){
             if (!(locations[0,0] != null && locations[0,0].name == "white_rook" &&
@@ -277,7 +283,9 @@ public class Game : MonoBehaviour
 
         if (IsCheckmate() == 0){
             Draw();
-        }    
+        }
+
+        Debug.Log(GenerateFen());    
 
     }
 
@@ -296,16 +304,16 @@ public class Game : MonoBehaviour
             promotionPiece = "B";
         } else if (gameOver == false && Input.GetKeyDown("r")){
             promotionPiece = "R";
-        } else if (gameOver == false && Input.GetKeyDown("a") && !analysis && !selecton){
+        } else if (gameOver == false && Input.GetKeyDown("a") && !analysis /*&& !selecton*/){
             analysis = true;
-        } else if (gameOver == false && Input.GetKeyDown("a") && !analysis && selecton){
+        } /*else if (gameOver == false && Input.GetKeyDown("a") && !analysis && selecton){
             analysis = true;
             selecton = false;
-            selected. GetComponent<Chessman>().Emsmallen(selected);/*<SpriteRenderer>().size -= new Vector2(0.05f, 0.05f);
-            selected. GetComponent<SpriteRenderer>().drawMode = SpriteDrawMode.Simple;*/
+            //selected. GetComponent<Chessman>().Emsmallen(selected);/*<SpriteRenderer>().size -= new Vector2(0.05f, 0.05f);
+            //selected. GetComponent<SpriteRenderer>().drawMode = SpriteDrawMode.Simple;
             selected. GetComponent<Chessman>().DestroyMovePlates(true);
             selected = null;
-        } else if (gameOver == false && Input.GetKeyDown("a") && analysis){
+        }*/ else if (gameOver == false && Input.GetKeyDown("a") && analysis){
             analysis = false;
         }
     }
@@ -328,7 +336,58 @@ public class Game : MonoBehaviour
     }
 
     public string GenerateFen(){
-        return "";
+        string fen = "";
+        for (int i = locations.GetLength(0)-1; i > -1 ; i--){
+            int empty_space = 0;
+            for (int j = 0; j < locations.GetLength(1); j++){
+                // note: the 2d array locations is NOT in row-major order
+                if (locations[j,i] == null){empty_space++;}
+                else{
+                    if (empty_space > 0){
+                        fen = fen + empty_space.ToString();
+                        empty_space = 0;
+                    }
+                    fen = fen + locations[j,i].GetComponent<Chessman>().GetFen();
+                }
+            }
+            if (empty_space > 0){fen = fen + empty_space.ToString();}
+            if (i<locations.Length-1){fen = fen + "/";}
+        }
+
+        fen = fen + " ";
+
+        if (currentPlayer == "white") {fen = fen + "w";}
+        else {fen = fen + "b";}
+
+        fen = fen + " ";
+
+        if (!(wqc||wkc||bqc||bkc)){fen = fen + "-";}
+
+        if (wkc){fen = fen + "K";}
+        if (wqc){fen = fen + "Q";}
+        if (bkc){fen = fen + "k";}
+        if (bqc){fen = fen + "q";}
+
+        fen = fen + " ";
+
+        // still need to implement LocationToAlgebraic
+
+        //if (enpassant_square[0] == -1){fen = fen + "-";}
+        //else {fen = fen + LocationToAlgebraic(enpassant_square[0], enpassant_square[1]);}
+
+        fen = fen + " ";
+
+        fen = fen + halfmove_clock.ToString();
+
+        fen = fen + " ";
+
+        fen = fen + fullmove_number.ToString();
+
+        return fen;
+    }
+
+    public List<int[]> FenToLocations(){
+        return new List<int[]>();
     }
 
     // takes a single location and converts it to algebraic form
