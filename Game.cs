@@ -285,7 +285,7 @@ public class Game : MonoBehaviour
             Draw();
         }
 
-        Debug.Log(GenerateFen());    
+        //Debug.Log(GenerateFen());    
 
     }
 

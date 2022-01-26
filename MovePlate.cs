@@ -62,6 +62,7 @@ public class MovePlate : MonoBehaviour
             gameObject.layer = 2;
             // Change the sprite and change the z-transform
             gameObject.GetComponent<SpriteRenderer>().sprite = active_square;
+            gameObject.GetComponent<SpriteRenderer>().color = new Color(1.0f, 0.64f, 0.0f, 0.5f);
             gameObject.transform.position = new Vector3( gameObject.transform.position.x,
                                                          gameObject.transform.position.y,
                                                          -0.5f);
@@ -99,6 +100,7 @@ public class MovePlate : MonoBehaviour
             } else {
                 y = 7;
             }
+
 
         if (attack){
             GameObject cp = controller.GetComponent<Game>().GetPosition(matrixX, matrixY);

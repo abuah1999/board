@@ -95,6 +95,16 @@ public class Board : MonoBehaviour
             mouseWorld = snapToGrid(mouseWorld);
             GameObject mp = Instantiate(movePlate, mouseWorld, Quaternion.identity);
             mp.GetComponent<MovePlate>().highlight = true;
+            foreach (GameObject h in highlightList){
+                //Debug.Log(Vector3.Distance(h.transform.position, mp.transform.position));
+                if (h && 
+                    Vector3.Distance(h.transform.position, mp.transform.position) < 1.6){
+                        //Debug.Log("hi!");
+                        Destroy(h);
+                        Destroy(mp);
+                        break;
+                    }
+            }
             highlightList.Add(mp);
         }
     
