@@ -9,4 +9,4 @@ A cross-platform desktop two-player chess game. Download it on your computer and
 * c key: Clear analysis objects
 * q key: Reset board
 
-![The Ruy Lopez Opening! A fierce strategic battle is sure to follow.](https://drive.google.com/file/d/1eQ10pr45k0BbsO23pGBSf6xPZw299J55/view?usp=sharing)
+![The Ruy Lopez Opening! A fierce strategic battle is sure to follow.](https://drive.google.com/uc?export=view&id=1eQ10pr45k0BbsO23pGBSf6xPZw299J55)
